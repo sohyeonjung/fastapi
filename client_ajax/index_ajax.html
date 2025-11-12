@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ToDo Client (AJAX)</title>
+</head>
+<body>
+  <h2>ToDo Client (AJAX)</h2>
+
+  <div>
+    <h3>추가(Add)</h3>
+    ID: <input id="add_id" /><br/>
+    Item: <input id="add_item" /><br/>
+    <button id="btn_add">추가</button>
+    <div id="add_result"></div>
+  </div>
+
+  <hr/>
+
+  <div>
+    <h3>조회(Get)</h3>
+    ID: <input id="get_id" />
+    <button id="btn_get">조회</button>
+    <div id="get_result"></div>
+  </div>
+
+  <script>
+    const base = "http://127.0.0.1:8000";
+
+    document.getElementById('btn_add').addEventListener('click', () => {
+      const id = document.getElementById('add_id').value.trim();
+      const item = document.getElementById('add_item').value.trim();
+      const out = document.getElementById('add_result');
+      out.textContent = "요청 중...";
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", base + "/todo/add");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            out.textContent = "성공: " + xhr.responseText;
+          } else {
+            out.textContent = "오류: " + xhr.status + " " + xhr.responseText;
+          }
+        }
+      };
+      xhr.send(JSON.stringify({ id: id, item: item }));
+    });
+
+    document.getElementById('btn_get').addEventListener('click', () => {
+      const id = document.getElementById('get_id').value.trim();
+      const out = document.getElementById('get_result');
+      out.textContent = "요청 중...";
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("GET", base + "/todo/get?id=" + encodeURIComponent(id));
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            out.textContent = "성공: " + xhr.responseText;
+          } else {
+            out.textContent = "오류: " + xhr.status + " " + xhr.responseText;
+          }
+        }
+      };
+      xhr.send();
+    });
+  </script>
+</body>
+</html>

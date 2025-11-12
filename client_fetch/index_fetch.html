@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>ToDo Client (Fetch)</title>
+</head>
+<body>
+  <h2>ToDo Client (Fetch)</h2>
+
+  <div>
+    <h3>추가(Add)</h3>
+    ID: <input id="add_id" /><br/>
+    Item: <input id="add_item" /><br/>
+    <button id="btn_add">추가</button>
+    <div id="add_result"></div>
+  </div>
+
+  <hr/>
+
+  <div>
+    <h3>조회(Get)</h3>
+    ID: <input id="get_id" />
+    <button id="btn_get">조회</button>
+    <div id="get_result"></div>
+  </div>
+
+  <script>
+    const base = "http://127.0.0.1:8000";
+
+    document.getElementById('btn_add').addEventListener('click', async () => {
+      const id = document.getElementById('add_id').value.trim();
+      const item = document.getElementById('add_item').value.trim();
+      const out = document.getElementById('add_result');
+      out.textContent = "요청 중...";
+      try {
+        const res = await fetch(base + "/todo/add", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ id, item })
+        });
+        const text = await res.text();
+        if (res.ok) out.textContent = "성공: " + text;
+        else out.textContent = "오류: " + res.status + " " + text;
+      } catch (err) {
+        out.textContent = "네트워크 오류: " + err;
+      }
+    });
+
+    document.getElementById('btn_get').addEventListener('click', async () => {
+      const id = document.getElementById('get_id').value.trim();
+      const out = document.getElementById('get_result');
+      out.textContent = "요청 중...";
+      try {
+        const res = await fetch(base + "/todo/get?id=" + encodeURIComponent(id));
+        const text = await res.text();
+        if (res.ok) out.textContent = "성공: " + text;
+        else out.textContent = "오류: " + res.status + " " + text;
+      } catch (err) {
+        out.textContent = "네트워크 오류: " + err;
+      }
+    });
+  </script>
+</body>
+</html>
