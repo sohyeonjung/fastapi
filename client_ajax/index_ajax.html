@@ -54,7 +54,7 @@
       out.textContent = "요청 중...";
 
       const xhr = new XMLHttpRequest();
-      xhr.open("GET", base + "/todo/get?id=" + encodeURIComponent(id));
+      xhr.open("GET", base + "/todo/get?todo_id=" + encodeURIComponent(id));
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
           if (xhr.status >= 200 && xhr.status < 300) {
