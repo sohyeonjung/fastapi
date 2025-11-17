@@ -32,15 +32,16 @@
       const item = document.getElementById('add_item').value.trim();
       const out = document.getElementById('add_result');
       out.textContent = "요청 중...";
+
       try {
-        const res = await fetch(base + "/todo/add", {
+        fetch(base + "/todo/add", {
           method: "POST",
           headers: {"Content-Type":"application/json"},
           body: JSON.stringify({ id, item })
-        });
-        const text = await res.text();
-        if (res.ok) out.textContent = "성공: " + text;
-        else out.textContent = "오류: " + res.status + " " + text;
+        })
+        .then(response => response.json())
+        .then(data => {out.textContent = "응답: " + JSON.stringify(data);})
+        
       } catch (err) {
         out.textContent = "네트워크 오류: " + err;
       }
@@ -51,10 +52,9 @@
       const out = document.getElementById('get_result');
       out.textContent = "요청 중...";
       try {
-        const res = await fetch(base + "/todo/get?id=" + encodeURIComponent(id));
-        const text = await res.text();
-        if (res.ok) out.textContent = "성공: " + text;
-        else out.textContent = "오류: " + res.status + " " + text;
+        fetch(base + "/todo/get?todo_id=" + encodeURIComponent(id))
+        .then(response => response.json())
+        .then(data => {out.textContent = "응답: " + JSON.stringify(data);})
       } catch (err) {
         out.textContent = "네트워크 오류: " + err;
       }
